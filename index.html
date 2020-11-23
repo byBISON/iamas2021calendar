@@ -6,6 +6,8 @@
 <link href='./src/packages/core/main.css' rel='stylesheet' />
 <link href='./src/packages-premium/timeline/main.css' rel='stylesheet' />
 <link href='./src/packages-premium/resource-timeline/main.css' rel='stylesheet' />
+<link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+<title>IAMAS2021スケジュール</title>
 <script src='./src/packages/core/main.js'></script>
 <script src='./src/packages/interaction/main.js'></script>
 <script src='./src/packages-premium/timeline/main.js'></script>
@@ -41,12 +43,30 @@
     });
   }
 
+  const calColors = {
+    'entire': '#000000',
+    'operation': '#da2323',
+    'design': '#f4bb00',
+    'construction': '#4187f7',
+    'event': '#ee1ea7',
+    'pr': '#51d418',
+    'video': '#8867da'
+  };
+
+  function tooltipInnerHTML(title,duration,user,info,id){
+    var result = "";
+    result = "<div class='tooltip-inner'>";
+    result = result+"<div class='tooltip-title'><i class='fas fa-square' style='color: "+calColors[id]+"'></i> "+title+"</div>";
+    result = result+"<div class='tooltip-duration'><i class='far fa-clock'></i> "+duration+"</div>";
+    if(user!="") result = result+"<div class='tooltip-user'><i class='fas fa-user'></i> "+user+"</div>";
+    if(info!="") result = result+"<div class='tooltip-info'>"+info+"</div>";
+    result = result+"</div>";
+    return result;
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
 
     callAppsScript("exampleFancA", "", function(data) {
-
-      console.log(data);
-
       var calendarEl = document.getElementById('calendar');
 
       var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -60,7 +80,7 @@
         },
         header: {
           left: '',
-          center: 'title',
+          center: '',
           right: ''
         },
         defaultView: 'resourceTimelineIAMAS2021',
@@ -76,7 +96,14 @@
         slotWidth: 45,
         eventRender: function(info) {
           var tooltip = new Tooltip(info.el, {
-            title: info.event.extendedProps.description,
+            html: true,
+            title: tooltipInnerHTML(
+              info.event.extendedProps.tooltipTitle,
+              info.event.extendedProps.tooltipDuration,
+              info.event.extendedProps.tooltipUser,
+              info.event.extendedProps.tooltipInfo,
+              info.event.extendedProps.tooltipId,
+            ),
             placement: 'top',
             trigger: 'hover',
             container: 'body'
@@ -85,17 +112,18 @@
         resourceAreaWidth: '80px',
         resourceLabelText: 'カレンダー',
         resources: [
-          { id: 'entire', title: '全体', eventColor: '#000000' },
-          { id: 'operation', title: '運営', eventColor: '#da2323' },
-          { id: 'design', title: 'デザイン', eventColor: '#f4bb00' },
-          { id: 'construction', title: '設営', eventColor: '#4187f7' },
-          { id: 'event', title: 'イベント', eventColor: '#ee1ea7' },
-          { id: 'pr', title: '広報', eventColor: '#51d418' },
-          { id: 'video', title: '映像', eventColor: '#8867da' }
+          { id: 'entire', title: '全体', eventColor: calColors['entire'] },
+          { id: 'operation', title: '運営', eventColor: calColors['operation'] },
+          { id: 'design', title: 'デザイン', eventColor: calColors['design'] },
+          { id: 'construction', title: '設営', eventColor: calColors['construction'] },
+          { id: 'event', title: 'イベント', eventColor: calColors['event'] },
+          { id: 'pr', title: '広報', eventColor: calColors['pr'] },
+          { id: 'video', title: '映像', eventColor: calColors['video'] }
         ],
         events: data
       });
 
+      $("#loader-wrap").remove();
       calendar.render();
     });
 
@@ -112,37 +140,90 @@
     font-size: 14px;
   }
 
+  #head-title {
+    margin: 50px auto 0px;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bolder;
+  }
+
   #calendar {
-    max-width: 90%;
-    margin: 50px auto;
+    width: 90%;
+    margin: 0px auto 50px;
+  }
+
+  #loader-wrap{
+    display: table;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+  }
+
+  #loader{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    background: url("./src/img/loader.gif") center center no-repeat;
   }
 
   .fc-timeline-event .fc-title{/*--ver 3.9.0 word wrap------*/
     //white-space: normal;
     //word-wrap: break-word;
-    font-size: 12px;
+    font-size: 0.7rem;
   }
 
   .fc-widget-header{
-    font-size: 5px;
+    font-size: 0.5rem;
   }
 
   .fc-body .fc-resource-area .fc-cell-content{
     height: 70px;
-    font-size: 15px;
+    font-size: 1rem;
+  }
+
+  .tooltip-inner{
+
+  }
+
+  .tooltip-title{
+    font-size: 1rem;
+    font-weight: bolder;
+    margin: 0 auto 12px;
+  }
+
+  .tooltip-inner a {
+    word-wrap:break-word;
+  }
+
+  .tooltip-duration{
+    font-size: 0.8rem;
+  }
+
+  .tooltip-user{
+    font-size: 0.8rem;
+  }
+
+  .tooltip-info{
+    font-size: 0.8rem;
+    margin: 12px auto 0;
   }
 
   .popper,
   .tooltip {
     position: absolute;
     z-index: 9999;
-    background: #FFC107;
+    background: #FFFFFF;
     color: black;
-    width: 150px;
-    border-radius: 3px;
-    box-shadow: 0 0 2px rgba(0,0,0,0.5);
-    padding: 10px;
-    text-align: center;
+    width: 200px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    padding: 13px 15px;
+    border: 1px solid #dddddd;
+    pointer-events: none;
   }
   .style5 .tooltip {
     background: #1E252B;
@@ -163,15 +244,14 @@
 
   .tooltip .tooltip-arrow,
   .popper .popper__arrow {
-    border-color: #FFC107;
-    pointer-events: none;
+    border-color: #333333;
   }
   .style5 .tooltip .tooltip-arrow {
     border-color: #1E252B;
   }
   .popper[x-placement^="top"],
   .tooltip[x-placement^="top"] {
-    margin-bottom: 5px;
+    margin-bottom: 15px;
   }
   .popper[x-placement^="top"] .popper__arrow,
   .tooltip[x-placement^="top"] .tooltip-arrow {
@@ -179,14 +259,14 @@
     border-left-color: transparent;
     border-right-color: transparent;
     border-bottom-color: transparent;
-    bottom: -5px;
+    bottom: -10px;
     left: calc(50% - 5px);
     margin-top: 0;
     margin-bottom: 0;
   }
   .popper[x-placement^="bottom"],
   .tooltip[x-placement^="bottom"] {
-    margin-top: 5px;
+    margin-top: 15px;
   }
   .tooltip[x-placement^="bottom"] .tooltip-arrow,
   .popper[x-placement^="bottom"] .popper__arrow {
@@ -194,7 +274,7 @@
     border-left-color: transparent;
     border-right-color: transparent;
     border-top-color: transparent;
-    top: -5px;
+    top: -10px;
     left: calc(50% - 5px);
     margin-top: 0;
     margin-bottom: 0;
@@ -233,8 +313,10 @@
 </style>
 </head>
 <body>
-
+  <div id="head-title">IAMAS2021 スケジュール</div>
   <div id='calendar'></div>
-
+  <div id='loader-wrap'>
+    <div id='loader'></div>
+  </div>
 </body>
 </html>
