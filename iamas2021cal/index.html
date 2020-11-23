@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<link href='../packages/core/main.css' rel='stylesheet' />
+<link href='../packages-premium/timeline/main.css' rel='stylesheet' />
+<link href='../packages-premium/resource-timeline/main.css' rel='stylesheet' />
+<script src='../packages/core/main.js'></script>
+<script src='../packages/interaction/main.js'></script>
+<script src='../packages-premium/timeline/main.js'></script>
+<script src='../packages-premium/resource-common/main.js'></script>
+<script src='../packages-premium/resource-timeline/main.js'></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script src='https://unpkg.com/popper.js/dist/umd/popper.min.js'></script>
+<script src='https://unpkg.com/tooltip.js/dist/umd/tooltip.min.js'></script>
+<script>
+
+
+  var startDate = new Date(2020, 10-1, 1);
+  var today = new Date();
+  var scrollDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()-3);
+  var termDay = (scrollDate-startDate) / 86400000;
+
+  const endpoint = "https://script.google.com/macros/s/AKfycbwl2v-Ok-IY6N7-nNIKj_HvHMaD50TZ3hFXzlZUzV-nmgyJsus/exec";
+
+  function callAppsScript(functionName, parameters, callbackFunc) {
+    var request = { 'function': functionName, 'parameters': parameters };
+    $.ajax({
+      type:"get",
+      url: endpoint,
+      data: request,
+      dataType: "jsonp",
+      success: function(data) {
+        callbackFunc(data);
+      }
+    }).fail(function(jqXHR, textStatus, errorThrown ) {
+      console.log("XMLHttpRequest : " + jqXHR.status + "\ntextStatus     : " + textStatus + "\nerrorThrown    : " + errorThrown.message);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    callAppsScript("exampleFancA", "", function(data) {
+
+      console.log(data);
+
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: [ 'interaction', 'resourceTimeline' ],
+        schedulerLicenseKey: 'GPL-My-Project-Is-Open-Source',
+        locale: 'ja',
+        editable: false,
+        contentHeight: 'auto',
+        scrollTime: {
+          days: termDay
+        },
+        header: {
+          left: '',
+          center: 'title',
+          right: ''
+        },
+        defaultView: 'resourceTimelineIAMAS2021',
+        views: {
+          resourceTimelineIAMAS2021: {
+            type: 'resourceTimeline',
+            visibleRange: {
+              start: '2020-10-01',
+              end: '2021-03-01'
+            }
+          }
+        },
+        slotWidth: 45,
+        eventRender: function(info) {
+          var tooltip = new Tooltip(info.el, {
+            title: info.event.extendedProps.description,
+            placement: 'top',
+            trigger: 'hover',
+            container: 'body'
+          });
+        },
+        resourceAreaWidth: '80px',
+        resourceLabelText: 'カレンダー',
+        resources: [
+          { id: 'entire', title: '全体', eventColor: '#000000' },
+          { id: 'operation', title: '運営', eventColor: '#da2323' },
+          { id: 'design', title: 'デザイン', eventColor: '#f4bb00' },
+          { id: 'construction', title: '設営', eventColor: '#4187f7' },
+          { id: 'event', title: 'イベント', eventColor: '#ee1ea7' },
+          { id: 'pr', title: '広報', eventColor: '#51d418' },
+          { id: 'video', title: '映像', eventColor: '#8867da' }
+        ],
+        events: data
+      });
+
+      calendar.render();
+    });
+
+
+  });
+
+</script>
+<style>
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: 90%;
+    margin: 50px auto;
+  }
+
+  .fc-timeline-event .fc-title{/*--ver 3.9.0 word wrap------*/
+    //white-space: normal;
+    //word-wrap: break-word;
+    font-size: 12px;
+  }
+
+  .fc-widget-header{
+    font-size: 5px;
+  }
+
+  .fc-body .fc-resource-area .fc-cell-content{
+    height: 70px;
+    font-size: 15px;
+  }
+
+  .popper,
+  .tooltip {
+    position: absolute;
+    z-index: 9999;
+    background: #FFC107;
+    color: black;
+    width: 150px;
+    border-radius: 3px;
+    box-shadow: 0 0 2px rgba(0,0,0,0.5);
+    padding: 10px;
+    text-align: center;
+  }
+  .style5 .tooltip {
+    background: #1E252B;
+    color: #FFFFFF;
+    max-width: 200px;
+    width: auto;
+    font-size: .8rem;
+    padding: .5em 1em;
+  }
+  .popper .popper__arrow,
+  .tooltip .tooltip-arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+  }
+
+  .tooltip .tooltip-arrow,
+  .popper .popper__arrow {
+    border-color: #FFC107;
+    pointer-events: none;
+  }
+  .style5 .tooltip .tooltip-arrow {
+    border-color: #1E252B;
+  }
+  .popper[x-placement^="top"],
+  .tooltip[x-placement^="top"] {
+    margin-bottom: 5px;
+  }
+  .popper[x-placement^="top"] .popper__arrow,
+  .tooltip[x-placement^="top"] .tooltip-arrow {
+    border-width: 5px 5px 0 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    bottom: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .popper[x-placement^="bottom"],
+  .tooltip[x-placement^="bottom"] {
+    margin-top: 5px;
+  }
+  .tooltip[x-placement^="bottom"] .tooltip-arrow,
+  .popper[x-placement^="bottom"] .popper__arrow {
+    border-width: 0 5px 5px 5px;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    top: -5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .tooltip[x-placement^="right"],
+  .popper[x-placement^="right"] {
+    margin-left: 5px;
+  }
+  .popper[x-placement^="right"] .popper__arrow,
+  .tooltip[x-placement^="right"] .tooltip-arrow {
+    border-width: 5px 5px 5px 0;
+    border-left-color: transparent;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    left: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .popper[x-placement^="left"],
+  .tooltip[x-placement^="left"] {
+    margin-right: 5px;
+  }
+  .popper[x-placement^="left"] .popper__arrow,
+  .tooltip[x-placement^="left"] .tooltip-arrow {
+    border-width: 5px 0 5px 5px;
+    border-top-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    right: -5px;
+    top: calc(50% - 5px);
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+</style>
+</head>
+<body>
+
+  <div id='calendar'></div>
+
+</body>
+</html>
