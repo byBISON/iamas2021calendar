@@ -55,11 +55,18 @@
   };
 
   function tooltipInnerHTML(title,duration,user,info,id){
-    var result = "";
+    var result = "<div>";
     result = result+"<div class='tooltip-title'><i class='fas fa-square' style='color: "+calColors[id]+"'></i> "+title+"</div>";
     result = result+"<div class='tooltip-duration'><i class='far fa-clock'></i> "+duration+"</div>";
     if(user!="") result = result+"<div class='tooltip-user'><i class='fas fa-user'></i> "+user+"</div>";
     if(info!="") result = result+"<div class='tooltip-info'>"+info+"</div>";
+    result = result+"</div>";
+    var dom = jQuery($.parseHTML(result)[0]);
+    dom.find(".tooltip-info a").each(function(index) {
+      $(this).attr("target", "_blank");
+      $(this).attr("rel", "noopener noreferrer");
+    });
+    result = dom.html();
     return result;
   }
 
@@ -365,8 +372,6 @@
   }
   .popper .popper__arrow,
   .tooltip .tooltip-arrow {
-    width: 200px;
-    height: 15px;
     position: absolute;
   }
 
@@ -381,16 +386,19 @@
   .tooltip[x-placement^="top"] {
     margin-bottom: 15px;
   }
-  .popper[x-placement^="top"] .popper__arrow,
-  .tooltip[x-placement^="top"] .tooltip-arrow {
-    bottom: -15px;
-    left: 0;
+  .popper[x-placement^="top"]::before,
+  .tooltip[x-placement^="top"]::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 25px;
+    bottom: -20px;
+    left: calc(50% - 150px);
     margin-top: 0;
     margin-bottom: 0;
   }
-  .popper[x-placement^="top"] .popper__arrow::before,
-  .tooltip[x-placement^="top"] .tooltip-arrow::before {
-    content: "";
+  .popper[x-placement^="top"] .popper__arrow,
+  .tooltip[x-placement^="top"] .tooltip-arrow {
     width: 0;
     height: 0;
     border-style: solid;
@@ -399,7 +407,7 @@
     border-left-color: transparent;
     border-right-color: transparent;
     border-bottom-color: transparent;
-    bottom: 5px;
+    bottom: -10px;
     left: calc(50% - 5px);
     margin-top: 0;
     margin-bottom: 0;
@@ -408,15 +416,19 @@
   .tooltip[x-placement^="bottom"] {
     margin-top: 15px;
   }
-  .popper[x-placement^="bottom"] .popper__arrow,
-  .tooltip[x-placement^="bottom"] .tooltip-arrow {
-    top: -15px;
-    left: 0;
+  .popper[x-placement^="bottom"]::before,
+  .tooltip[x-placement^="bottom"]::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 25px;
+    top: -20px;
+    left: calc(50% - 150px);
     margin-top: 0;
     margin-bottom: 0;
   }
-  .popper[x-placement^="bottom"] .popper__arrow::before,
-  .tooltip[x-placement^="bottom"] .tooltip-arrow::before {
+  .popper[x-placement^="bottom"] .popper__arrow,
+  .tooltip[x-placement^="bottom"] .tooltip-arrow {
     content: "";
     width: 0;
     height: 0;
@@ -426,7 +438,7 @@
     border-left-color: transparent;
     border-right-color: transparent;
     border-top-color: transparent;
-    top: 5px;
+    top: -10px;
     left: calc(50% - 5px);
     margin-top: 0;
     margin-bottom: 0;
