@@ -56,12 +56,10 @@
 
   function tooltipInnerHTML(title,duration,user,info,id){
     var result = "";
-    result = "<div class='tooltip-inner'>";
     result = result+"<div class='tooltip-title'><i class='fas fa-square' style='color: "+calColors[id]+"'></i> "+title+"</div>";
     result = result+"<div class='tooltip-duration'><i class='far fa-clock'></i> "+duration+"</div>";
     if(user!="") result = result+"<div class='tooltip-user'><i class='fas fa-user'></i> "+user+"</div>";
     if(info!="") result = result+"<div class='tooltip-info'>"+info+"</div>";
-    result = result+"</div>";
     return result;
   }
 
@@ -350,28 +348,26 @@
     z-index: 9999;
     background: #FFFFFF;
     color: black;
-    width: 200px;
+    width: 300px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     padding: 13px 15px;
     border: 1px solid #dddddd;
-    pointer-events: none;
+    /* pointer-events: none; */
   }
   .style5 .tooltip {
     background: #1E252B;
     color: #FFFFFF;
-    max-width: 200px;
+    max-width: 300px;
     width: auto;
     font-size: .8rem;
     padding: .5em 1em;
   }
   .popper .popper__arrow,
   .tooltip .tooltip-arrow {
-    width: 0;
-    height: 0;
-    border-style: solid;
+    width: 200px;
+    height: 15px;
     position: absolute;
-    margin: 5px;
   }
 
   .tooltip .tooltip-arrow,
@@ -387,11 +383,23 @@
   }
   .popper[x-placement^="top"] .popper__arrow,
   .tooltip[x-placement^="top"] .tooltip-arrow {
+    bottom: -15px;
+    left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  .popper[x-placement^="top"] .popper__arrow::before,
+  .tooltip[x-placement^="top"] .tooltip-arrow::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
     border-width: 5px 5px 0 5px;
     border-left-color: transparent;
     border-right-color: transparent;
     border-bottom-color: transparent;
-    bottom: -10px;
+    bottom: 5px;
     left: calc(50% - 5px);
     margin-top: 0;
     margin-bottom: 0;
@@ -400,46 +408,28 @@
   .tooltip[x-placement^="bottom"] {
     margin-top: 15px;
   }
-  .tooltip[x-placement^="bottom"] .tooltip-arrow,
-  .popper[x-placement^="bottom"] .popper__arrow {
-    border-width: 0 5px 5px 5px;
-    border-left-color: transparent;
-    border-right-color: transparent;
-    border-top-color: transparent;
-    top: -10px;
-    left: calc(50% - 5px);
+  .popper[x-placement^="bottom"] .popper__arrow,
+  .tooltip[x-placement^="bottom"] .tooltip-arrow {
+    top: -15px;
+    left: 0;
     margin-top: 0;
     margin-bottom: 0;
   }
-  .tooltip[x-placement^="right"],
-  .popper[x-placement^="right"] {
-    margin-left: 5px;
-  }
-  .popper[x-placement^="right"] .popper__arrow,
-  .tooltip[x-placement^="right"] .tooltip-arrow {
-    border-width: 5px 5px 5px 0;
+  .popper[x-placement^="bottom"] .popper__arrow::before,
+  .tooltip[x-placement^="bottom"] .tooltip-arrow::before {
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    border-width: 0px 5px 5px 5px;
     border-left-color: transparent;
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    left: -5px;
-    top: calc(50% - 5px);
-    margin-left: 0;
-    margin-right: 0;
-  }
-  .popper[x-placement^="left"],
-  .tooltip[x-placement^="left"] {
-    margin-right: 5px;
-  }
-  .popper[x-placement^="left"] .popper__arrow,
-  .tooltip[x-placement^="left"] .tooltip-arrow {
-    border-width: 5px 0 5px 5px;
-    border-top-color: transparent;
     border-right-color: transparent;
-    border-bottom-color: transparent;
-    right: -5px;
-    top: calc(50% - 5px);
-    margin-left: 0;
-    margin-right: 0;
+    border-top-color: transparent;
+    top: 5px;
+    left: calc(50% - 5px);
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
 </style>
